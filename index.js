@@ -36,7 +36,7 @@ class client {
     configure(tokenFilePath) {
         console.log(tokenFilePath,'-----------path');
         console.log(typeof tokenFilePath,'-----------type');
-        let config = require(tokenFilePath);
+        let config = require('../../'+tokenFilePath);
         this.access_token = config.access_token;
         console.log('configure()', this.access_token);
         this.socket.emit('config', this.access_token);
