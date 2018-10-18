@@ -34,21 +34,21 @@ class client {
     }
 
     configure(tokenFilePath) {
-        console.log(tokenFilePath,'-----------path');
-        console.log(typeof tokenFilePath,'-----------type');
+        // console.log(tokenFilePath,'-----------path');
+        // console.log(typeof tokenFilePath,'-----------type');
         let config = require('../../'+tokenFilePath);
         this.access_token = config.access_token;
-        console.log('configure()', this.access_token);
+        console.log('token sent');
         this.socket.emit('config', this.access_token);
-        console.log('exit configure');
+        // console.log('exit configure');
         }
 
     push(eventType, activity) {
         if (this.access_token !== '') {
-            console.log('in push');
+            // console.log('in push');
             this.socket.emit('activities', activity);
             this.socket.emit('eventType', eventType);
-            console.log('exit push');
+            // console.log('exit push');
         }
 
     }
