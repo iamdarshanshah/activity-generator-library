@@ -33,8 +33,8 @@ class client {
         }
     }
 
-    configure() {
-        let config = require('./config.json');
+    configure(tokenFilePath) {
+        let config = require(tokenFilePath);
         this.access_token = config.access_token;
         console.log('configure()', this.access_token);
         this.socket.emit('config', this.access_token);
