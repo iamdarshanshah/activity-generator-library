@@ -33,14 +33,14 @@ class client {
     }
 
     configure(tokenFilePath) {
-        try{
+        try {
             let config = require('../../' + tokenFilePath);
             this.access_token = config.access_token;
             console.log('token sent');
             this.socket.emit('config', this.access_token);
         }
-        catch(error){
-            console.log('error in sending token :'+error);
+        catch (error) {
+            console.log('error in sending token :' + error);
         }
     }
 
