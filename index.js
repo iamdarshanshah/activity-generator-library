@@ -10,24 +10,29 @@ class client {
         if (this.access_token !== null) {
             var fs = require('fs');
             var fetch = require('node-fetch');
-            fs.readFile('../../' + pathToFile, "utf8", function (err, data) {
-                if (err) {
-                    return console.log(err);
-                }
-                console.log(data);
-                let applicationName = {
-                    yaml: data,
-                }
+            try {
+                fs.readFile('../../' + pathToFile, "utf8", function (err, data) {
+                    if (err) {
+                        return console.log(err);
+                    }
+                    console.log(data);
+                    let applicationName = {
+                        yaml: data,
+                    }
 
-                fetch('http://172.23.238.217:8002/register-yaml', {
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'application/json, text/plain, */*',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(applicationName)
+                    fetch('http://172.23.238.217:8002/register-yaml', {
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'application/json, text/plain, */*',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(applicationName)
+                    })
                 })
-            })
+            }
+            catch (error) {
+                console.log('error in reading/fetching yaml file : ' + error);
+            }
 
         }
     }
