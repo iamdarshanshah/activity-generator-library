@@ -7,36 +7,41 @@ class client {
     }
 
     publishSpec(pathToFile) {
-            if (this.access_token !== null) {
-                var fs = require('fs');
-                var fetch = require('node-fetch');
-                fs.readFile('../../'+pathToFile, "utf8", function (err, data) {
-                    if (err) {
-                        return console.log(err);
-                    }
-                    console.log(data);
-                    let applicationName = {
-                        yaml: data,
-                    }
+        if (this.access_token !== null) {
+            var fs = require('fs');
+            var fetch = require('node-fetch');
+            fs.readFile('../../' + pathToFile, "utf8", function (err, data) {
+                if (err) {
+                    return console.log(err);
+                }
+                console.log(data);
+                let applicationName = {
+                    yaml: data,
+                }
 
-                    fetch('http://172.23.238.217:8002/register-yaml', {
-                        method: 'POST',
-                        headers: {
-                            'Accept': 'application/json, text/plain, */*',
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(applicationName)
-                    })
+                fetch('http://172.23.238.217:8002/register-yaml', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json, text/plain, */*',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(applicationName)
                 })
+            })
 
-            }
         }
+    }
 
     configure(tokenFilePath) {
-        let config = require('../../'+tokenFilePath);
-        this.access_token = config.access_token;
-        console.log('token sent');
-        this.socket.emit('config', this.access_token);
+        try{
+            let config = require('../../' + tokenFilePath);
+            this.access_token = config.access_token;
+            console.log('token sent');
+            this.socket.emit('config', this.access_token);
+        }
+        catch(error){
+            console.log('error in sending token :'+error);
+        }
     }
 
     push(eventType, activity) {
@@ -50,10 +55,15 @@ class client {
     }
 
     on(tokenFilePath, callback) {
-        this.configure(tokenFilePath);
-        this.socket.on('act stream', (activity) => {
-            callback(activity);
-        });
+        try {
+            this.configure(tokenFilePath);
+            this.socket.on('act stream', (activity) => {
+                callback(activity);
+            });
+        }
+        catch (error) {
+            console.log('error : ' + error);
+        }
     }
 
 }
