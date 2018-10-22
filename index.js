@@ -59,10 +59,11 @@ class client {
 
     }
 
-    on(tokenFilePath, callback) {
+    on(tokenValue, listenForEvent, callback) {
         try {
-            this.configure(tokenFilePath);
-            this.socket.on('act stream', (activity) => {
+            this.access_token = tokenValue;
+            this.socket.emit('config',this.access_token)
+            this.socket.on(listenForEvent, (activity) => {
                 callback(activity);
             });
         }
