@@ -62,7 +62,7 @@ class client {
     on(tokenValue, listenForEvent, callback) {
         try {
             this.access_token = tokenValue;
-            this.socket.emit('config',this.access_token)
+            this.socket.emit('config',this.access_token);
             this.socket.on(listenForEvent, (activity) => {
                 callback(activity);
             });
