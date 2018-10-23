@@ -1,10 +1,4 @@
 # GITLAB ACTIVITY LIBRARY
-## Steps for using
-- install the library
-
-```
-npm install github:gettodarshanshah/activity-generator-library#master --save
-```
 
 ## Methods
 - configure(tokenFilePath)
