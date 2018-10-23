@@ -1,6 +1,6 @@
 {
-  "name": "gitlab-activities-library",
-  "version": "1.0.0",
+  "name": "act-streams-client",
+  "version": "1.0.0-alpha",
   "description": "",
   "main": "index.js",
   "scripts": {

@@ -52,8 +52,12 @@ class client {
     push(eventType, activity) {
         if (this.access_token !== '') {
             // console.log('in push');
-            this.socket.emit('activities', activity);
-            this.socket.emit('eventType', eventType);
+            try {
+                this.socket.emit(eventType, activity);
+            }
+            catch (error) {
+                console.log('error in pushing activities/eventType : ' + error);
+            }
             // console.log('exit push');
         }
 
@@ -62,7 +66,7 @@ class client {
     on(tokenValue, listenForEvent, callback) {
         try {
             this.access_token = tokenValue;
-            this.socket.emit('config',this.access_token);
+            this.socket.emit('config', this.access_token);
             this.socket.on(listenForEvent, (activity) => {
                 callback(activity);
             });
