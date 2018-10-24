@@ -12,15 +12,12 @@ method used to send jwt token stored in json file to the connected machine defin
 
 syntax :
 
-```
-const Client = import('gitlab-activities-library');
+```javascript
+const Client = import('act-streams-client');
 const client = new client('192.0.0.1:4000');
 
 client.configure('./tokenfile.json');
 ```
-
-
-
 
 ### publishSpec(pathToSpecFile)
 
@@ -28,8 +25,8 @@ method used for publishing spec. file(yaml/json) to the connected machine define
 
 syntax :
 
-```
-const Client = import('gitlab-activities-library');
+```javascript
+const Client = import('act-streams-client');
 const client = new client('192.0.0.1:4000');
 
 client.publishSpec('./specfile.yaml');
@@ -41,11 +38,11 @@ method used to emit eventType and corresponding activity to the connected machin
 
 syntax :
 
-```
-const Client = import('gitlab-activities-library');
+```javascript
+const Client = import('act-streams-client');
 const client = new client('192.0.0.1:4000');
 
-client.push(eventType,activity);
+client.push('CreateProject',activity);
 ```
 
 ### on(tokenValue,listenForEvent,callback)
@@ -54,9 +51,9 @@ method will first emit the token value to connected machine and then listen for 
 
 syntax:
 
-```
-const Client = import('gitlab-activities-library');
-const client = new client('ip:port');
+```javascript
+const Client = import('act-streams-client');
+const client = new client('127.0.0.1:8000');
 
 client.on(tokenValue,'event',(activity)=>{console.log(activity)});
 ```
