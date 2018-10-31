@@ -3,7 +3,7 @@ const EventEmitter = require('events').EventEmitter;
 class client extends EventEmitter {
 
 	constructor(ip) {
-		super(props);
+		super(ip);
 		this.access_token = null;
 		this.socket = io(ip);
 	}
