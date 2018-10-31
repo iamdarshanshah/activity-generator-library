@@ -34,11 +34,11 @@ class client extends EventEmitter {
 	}
 
 	//send token to the server 
-	configure(tokenValue,callback) {
+	configure(tokenValue, callback) {
 		try {
 			this.access_token = tokenValue;
 			console.log('token sent');
-			this.socket.emit('config', this.access_token,(ack)=>{callback(ack)});
+			this.socket.emit('config', this.access_token, (ack) => { callback(ack) });
 		}
 		catch (error) {
 			console.log('error in sending token :' + error);
@@ -46,11 +46,11 @@ class client extends EventEmitter {
 	}
 
 	//pushing activities to server
-	push(eventType, activity,callback) {
+	push(eventType, activity, callback) {
 		if (this.access_token !== null) {
 			// console.log('in push');
 			try {
-				this.socket.emit(eventType, activity, (ack)=>{callback(ack)});
+				this.socket.emit(eventType, activity, (ack) => { callback(ack) });
 			}
 			catch (error) {
 				console.log('error in pushing activities/eventType : ' + error);
