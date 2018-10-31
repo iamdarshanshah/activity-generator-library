@@ -1,5 +1,6 @@
 const io = require('socket.io-client');
-class client {
+const EventEmitter = require('events').EventEmitter;
+class client extends EventEmitter {
 
 	constructor(ip) {
 		this.access_token = null;
@@ -7,15 +8,15 @@ class client {
 	}
 
 	//publish the specs file to registry
-	publishSpec(fileData) {
+	publishSpec(specFileData) {
 		if (this.access_token !== null) {
 			var fetch = require('node-fetch');
 			try {
-				console.log(fileData);
+				console.log(specFileData);
 				let ActivitySpecs = {
-					yaml: fileData,
+					yaml: specFileData,
 				}
-
+				//fetch-post to the registry
 				fetch('http://172.23.238.217:8002/register-yaml', {
 					method: 'POST',
 					headers: {
@@ -32,11 +33,11 @@ class client {
 	}
 
 	//send token to the server 
-	configure(tokenValue) {
+	configure(tokenValue,callback) {
 		try {
 			this.access_token = tokenValue;
 			console.log('token sent');
-			this.socket.emit('config', this.access_token);
+			this.socket.emit('config', this.access_token,(ack)=>{callback(ack)});
 		}
 		catch (error) {
 			console.log('error in sending token :' + error);
@@ -44,11 +45,11 @@ class client {
 	}
 
 	//pushing activities to server
-	push(eventType, activity) {
+	push(eventType, activity,callback) {
 		if (this.access_token !== null) {
 			// console.log('in push');
 			try {
-				this.socket.emit(eventType, activity);
+				this.socket.emit(eventType, activity, (ack)=>{callback(ack)});
 			}
 			catch (error) {
 				console.log('error in pushing activities/eventType : ' + error);
