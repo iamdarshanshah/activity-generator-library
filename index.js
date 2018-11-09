@@ -1,15 +1,25 @@
 const io = require('socket.io-client');
 const EventEmitter = require('events').EventEmitter;
+const Queue = require('node-persistent-queue');
 class client extends EventEmitter {
 
-	constructor(ip) {
+	constructor(ip, pathToSqlLiteDB) {
 		super(ip);
 		this.access_token = null;
 		this.socket = io(ip);
+		this.q = new Queue(pathToSqlLiteDB);
+		var fs = require("fs");
+		var file = pathToSqlLiteDB;
+		var exists = fs.existsSync(file);
+
+		if (!exists) {
+			console.log("Creating DB file.");
+			fs.openSync(file, "w");
+		}
 	}
 
 	//publish the specs file to registry
-	publishSpec(specFileData) {
+	publishSpec(specFileData,apiPath) {
 		if (this.access_token !== null) {
 			var fetch = require('node-fetch');
 			try {
@@ -18,7 +28,7 @@ class client extends EventEmitter {
 					yaml: specFileData,
 				}
 				//fetch-post to the registry
-				fetch('http://172.23.238.217:8002/register-yaml', {
+				fetch(apiPath, {
 					method: 'POST',
 					headers: {
 						'Accept': 'application/json, text/plain, */*',
@@ -61,7 +71,7 @@ class client extends EventEmitter {
 	}
 
 	//listen for events from server
-	on(listenForEvent, callback) {
+	clientOn(listenForEvent, callback) {
 		try {
 			this.socket.on(listenForEvent, (activity) => {
 				callback(activity);
@@ -72,6 +82,37 @@ class client extends EventEmitter {
 		}
 	}
 
+	//listen for events from queues
+	on(listenForEvent, callback) {
+		this.q.on(listenForEvent, (task) => {
+			callback(task);
+		})
+	}
+
+	//open the db
+	openQueue() {
+		return this.q.open();
+	}
+
+	//start queue and processing tasks
+	startQueue(activity) {
+		this.q.start(activity);
+	}
+
+	//adding task to queue
+	addToQueue(activity) {
+		this.q.add(activity);
+	}
+
+	//after processing of task is completed
+	done() {
+		this.q.done();
+	}
+
+	//returns length of the queue i.e. items in queue
+	queueLength() {
+		return this.q.getLength();
+	}
 }
 
 module.exports = client;
