@@ -73,8 +73,8 @@ class client extends EventEmitter {
 	//listen for events from server
 	clientOn(listenForEvent, callback) {
 		try {
-			this.socket.on(listenForEvent, (activity) => {
-				callback(activity);
+			this.socket.on(listenForEvent, (activity,ack) => {
+				callback(activity,ack);
 			});
 		}
 		catch (error) {
