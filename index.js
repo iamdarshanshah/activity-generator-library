@@ -20,10 +20,10 @@ class client extends EventEmitter {
 
 	//publish the specs file to registry
 	publishSpec(specFileData,apiPath) {
-		if (this.access_token !== null) {
+		// if (this.access_token !== null) {
 			var fetch = require('node-fetch');
 			try {
-				console.log(specFileData);
+				// console.log(specFileData);
 				let ActivitySpecs = {
 					yaml: specFileData,
 				}
@@ -35,12 +35,12 @@ class client extends EventEmitter {
 						'Content-Type': 'application/json'
 					},
 					body: JSON.stringify(ActivitySpecs)
-				})
+				}).then((res) => { console.log(JSON.stringify(res)); console.log('object',JSON.stringify(ActivitySpecs)); }).catch((err) => { console.log(err) });
 			}
 			catch (error) {
 				console.log('error in Publishing Specs file : ' + error);
 			}
-		}
+		// }
 	}
 
 	//send token to the server 
