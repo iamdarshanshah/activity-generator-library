@@ -11,7 +11,7 @@ class client extends EventEmitter {
 		var fs = require("fs");
 		var file = pathToSqlLiteDB;
 		var exists = fs.existsSync(file);
-
+		//if file doesn't exist...it creates a new one
 		if (!exists) {
 			console.log("Creating DB file.");
 			fs.openSync(file, "w");
@@ -57,7 +57,7 @@ class client extends EventEmitter {
 
 	//pushing activities to server
 	push(eventType, activity, callback) {
-		if (this.access_token !== null) {
+		// if (this.access_token !== null) {
 			// console.log('in push');
 			try {
 				this.socket.emit(eventType, activity, (ack) => { callback(ack) });
@@ -66,7 +66,7 @@ class client extends EventEmitter {
 				console.log('error in pushing activities/eventType : ' + error);
 			}
 			// console.log('exit push');
-		}
+		// }
 
 	}
 

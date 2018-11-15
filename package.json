@@ -15,8 +15,8 @@
   "author": "Darshan Shah",
   "license": "MIT",
   "dependencies": {
-    "node-fetch": "^2.2.0",
-    "node-persistent-queue": "^0.2.0",
+    "node-fetch": "^2.3.0",
+    "node-persistent-queue": "^0.3.1",
     "socket.io-client": "^2.1.1"
   }
 }
