@@ -6,8 +6,8 @@
   "keywords": [
     "socket.io-client",
     "node-fetch",
-    "fs",
-    "node-persistent-queue"
+    "node-persistent-queue",
+    "Events Emitter"
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
