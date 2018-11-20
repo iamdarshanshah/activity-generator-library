@@ -1,16 +1,20 @@
 # GITLAB ACTIVITY LIBRARY
 
 ## Methods
-- configure(tokenvalue,callback)
+- configure(tokenvalue,callback,version)
 - clientOn(tokenValue,listenForEvent,callback)
 - push(eventType,activity,callback)
 - publishSpec(specFileData)
 - on(listenForEvent,callback)
-- openQueue()
+- openQueue() <!-- returns a promise -->
 - startQueue(activity)
 - addToQueue(activity)
 - done()
 - queueLength()
+- downloadToken(applicationName, apiPath, version)
+- removeQueueJob(id) <!-- returns a promise -->
+- queueHas(id) <!-- returns a promise -->
+-	abortQueue() 
 
 ### configure(tokenvalue,callback)
 
@@ -20,9 +24,10 @@ syntax :
 
 ```javascript
 const Client = import('act-streams-client');
-const client = new client('192.0.0.1:4000','path/to/sqllite.db');
+const client = new client('127.0.0.1:4000','path/to/sqllite.db');
 
-client.configure(require('./configure.json').access_token);
+client.configure(require('./configure.json').access_token,(ack)=>{console.log(`ack : ${ack}`)});
+client.configure(require('./configure.json').access_token,(ack)=>{console.log(`ack : ${ack}`)},'0.0.1');
 ```
 
 ### publishSpec(specFileData,apiPath)
@@ -33,7 +38,7 @@ syntax :
 
 ```javascript
 const Client = import('act-streams-client');
-const client = new client('192.0.0.1:4000','path/to/sqllite.db');
+const client = new client('127.0.0.1:4000','path/to/sqllite.db');
 
 client.publishSpec(require('./specFile.yaml'),'http://172.0.0.1:8000/register-yaml');
 ```
@@ -46,7 +51,7 @@ syntax :
 
 ```javascript
 const Client = import('act-streams-client');
-const client = new client('192.0.0.1:4000','path/to/sqllite.db');
+const client = new client('127.0.0.1:4000','path/to/sqllite.db');
 
 client.push('CreateProject',activity, (ack)=>{ ... });
 ```
@@ -77,6 +82,20 @@ const client = new client('127.0.0.1:8000','path/to/sqllite.db');
 let length = client.queueLength();
 ```
 
+### downloadToken(applicationName, apiPath, version)
+
+provided applicationName and apiPath.
+User will be able to download token for valid registered application.
+
+if version is not provided, by default, it will download the token for latest version of app.
+
+```javascript
+const Client = import('act-streams-client');
+const client = new client('127.0.0.1:8000','path/to/sqllite.db');
+
+client.downloadToken('AppName','http://path-to-api'); //latest version
+client.downloadToken('AppName','http://path-to-api','0.0.1'); //for version 0.0.1 (if it exist)
+```
 
 ## Events
 
@@ -164,8 +183,8 @@ client.openQueue()
   });
 
 //sending token to the server
-console.log(require('./configure.json').access_token);
-client.configure(require('./configure.json').access_token);
+console.log(require('./configure.json').token);
+client.configure(require('./configure.json').token);
 
 ```
 
