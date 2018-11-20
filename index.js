@@ -40,7 +40,10 @@ class client extends EventEmitter {
 					'Content-Type': 'application/json'
 				},
 				body: JSON.stringify(ActivitySpecs)
-			}).then((res) => { console.log(JSON.stringify(res)); console.log('object', JSON.stringify(ActivitySpecs)); }).catch((err) => { console.log(err) });
+			}).then((response) => {
+				return response.json();
+			  })
+			.then((res) => { console.log(JSON.stringify(res)); console.log('object', JSON.stringify(ActivitySpecs)); }).catch((err) => { console.log(err) });
 		}
 		catch (error) {
 			console.log('error in Publishing Specs file : ' + error);
