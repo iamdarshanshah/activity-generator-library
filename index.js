@@ -136,7 +136,7 @@ class client extends EventEmitter {
 					.then((json) => {
 						console.log(json);
 						var fs = require('fs');
-						file = fs.createWriteStream('./configure.json');
+						let file = fs.createWriteStream('./configure.json');
 						file.write(JSON.stringify(json));
 					})
 					.catch(err => console.error(err));
@@ -147,7 +147,7 @@ class client extends EventEmitter {
 					.then((token) => {
 						console.log(token);
 						var fs = require('fs');
-						file = fs.createWriteStream(`./${version}_configure.json`);
+						let file = fs.createWriteStream(`./${version}_configure.json`);
 						file.write(JSON.stringify(token));
 					})
 					.catch(err => console.error(err));
