@@ -49,7 +49,7 @@ class client extends EventEmitter {
 	}
 
 	//send token to the server 
-	configure(token, version, callback) {
+	configure(token,callback,version) {
 		try {
 			if (version === undefined) {
 				version = '';
