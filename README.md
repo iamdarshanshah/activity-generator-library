@@ -2,7 +2,7 @@
 
 ## Methods
 - configure(tokenvalue,callback,version)
-- clientOn(tokenValue,listenForEvent,callback)
+- subscribe(listenForEvent,callback)
 - push(eventType,activity,callback)
 - publishSpec(specFileData)
 - on(listenForEvent,callback)
@@ -56,9 +56,9 @@ const client = new client('127.0.0.1:4000','path/to/sqllite.db');
 client.push('CreateProject',activity, (ack)=>{ ... });
 ```
 
-### clientOn(tokenValue,listenForEvent,callback)
+### subscribe(tokenValue,listenForEvent,callback)
 
-method will first emit the token value to connected machine and then listen for the event defined at listenForEvent and will perform callback on it.
+method will listen for the event defined at listenForEvent and will perform callback on it.
 
 syntax:
 
@@ -66,7 +66,7 @@ syntax:
 const Client = import('act-streams-client');
 const client = new client('127.0.0.1:8000','path/to/sqllite.db');
 
-client.clientOn(tokenValue,'event',(activity)=>{ ... });
+client.subscribe('event',(activity)=>{ ... });
 ```
 
 ### queueLength()
