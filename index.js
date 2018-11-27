@@ -120,18 +120,31 @@ class client extends EventEmitter {
   }
 
   //download token with applicationName
-  downloadToken(applicationName, apiPath) {
+  downloadToken(applicationName, version, apiPath) {
     var fetch = require('node-fetch');
     try {
-      fetch(`${apiPath}/${applicationName}`)
-        .then(res => res.json())
-        .then((json) => {
-          console.log(json);
-          var fs = require('fs');
-          let file = fs.createWriteStream('./configure.json');
-          file.write(JSON.stringify(json));
-        })
-        .catch(err => console.error(err));
+      if (version !== undefined) {
+        fetch(`${apiPath}/${applicationName}/${version}`)
+          .then(res => res.json())
+          .then((json) => {
+            console.log(json);
+            var fs = require('fs');
+            let file = fs.createWriteStream(`./${version}_configure.json`);
+            file.write(JSON.stringify(json));
+          })
+          .catch(err => console.error(err));
+      }
+      else {
+        fetch(`${apiPath}/${applicationName}`)
+          .then(res => res.json())
+          .then((json) => {
+            console.log(json);
+            var fs = require('fs');
+            let file = fs.createWriteStream('./configure.json');
+            file.write(JSON.stringify(json));
+          })
+          .catch(err => console.error(err));
+      }
     }
     catch (err) {
       console.log('Error in downloadToken() : ', err);
