@@ -1,0 +1,22 @@
+{
+  "name": "client-streamer",
+  "version": "1.0.4-alpha",
+  "description": "A client library used for establishing connection with streaming server to get/push activity stream data and also maintain a persistent queue on client side",
+  "main": "index.js",
+  "keywords": [
+    "socket.io-client",
+    "node-fetch",
+    "node-persistent-queue",
+    "Events Emitter"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Darshan Shah",
+  "license": "MIT",
+  "dependencies": {
+    "node-fetch": "^2.3.0",
+    "node-persistent-queue": "^0.3.1",
+    "socket.io-client": "^2.1.1"
+  }
+}
