@@ -1,102 +1,71 @@
-# GITLAB ACTIVITY LIBRARY
+# Client Stream Library
+
+- Through this library a program can connect to Streaming Server.
+- It can Send Configuration token, publish activities and can subscribe to activities and events from      streaming server.
+- Published activities are sent using a queue mechanism to ensure no data loss.
+- Also one can get all types of activities for a particular application. 
 
 ## Methods
-- configure(tokenvalue,callback,version)
-- subscribe(listenForEvent,callback)
-- push(eventType,activity,callback)
-- publishSpec(specFileData)
-- on(listenForEvent,callback)
-- pushToQueue(activity)
-- openQueue() <!-- returns a promise -->
-- startQueue(activity)
-- addToQueue(activity)
-- done()
-- queueLength()
-- downloadToken(applicationName, apiPath, version)
-- removeQueueJob(id) <!-- returns a promise -->
-- queueHas(id) <!-- returns a promise -->
--	abortQueue() 
+- configure(tokenvalue,version,callback)
+- publishSpec(specFileData,token)
+- publishActivity(activity)
+- subscribe(activity,callback)
+- getActivityHistory()
 
-### configure(tokenvalue,callback)
+### configure(tokenvalue,version,callback)
 
 method used to send jwt token stored in json file to the connected machine defined in the constructor.
 
 syntax :
 
 ```javascript
-const Client = import('act-streams-client');
+const Client = require('client-streamer');
 const client = new client('127.0.0.1:4000','path/to/sqllite.db');
 
-client.configure(require('./configure.json').access_token,(ack)=>{console.log(`ack : ${ack}`)});
-client.configure(require('./configure.json').access_token,(ack)=>{console.log(`ack : ${ack}`)},'0.0.1');
+client.configure('jwt-token','version',(ack)=>{console.log(`ack : ${ack}`)});
+client.configure('jwt-token',null,(ack)=>{console.log(`ack : ${ack}`)});
 ```
 
-### publishSpec(specFileData,apiPath)
+### publishSpec(specFileData,token,apiPath)
 
 method used for publishing spec. file(yaml/json) to the apiPath defined as the method parameter using fetch.
 
 syntax :
 
 ```javascript
-const Client = import('act-streams-client');
+const Client = require('client-streamer');
 const client = new client('127.0.0.1:4000','path/to/sqllite.db');
 
-client.publishSpec(require('./specFile.yaml'),'http://172.0.0.1:8000/register-yaml');
+client.publishSpec(require('./specFile.yaml'),'jwt-token','http://172.0.0.1:8000/register-yaml');
 ```
 
-### push(eventType,activity,callback)
+### publishActivity(activity)
 
 method used to emit eventType and corresponding activity to the connected machine defined in the constructor.
 
 syntax :
 
 ```javascript
-const Client = import('act-streams-client');
+const Client = require('client-streamer');
 const client = new client('127.0.0.1:4000','path/to/sqllite.db');
 
-client.push('CreateProject',activity, (ack)=>{ ... });
+client.publishActivity({'hi':'hello world'});
 ```
 
-### pushToQueue(activity)
-
-method used to emit eventType and corresponding activity to the connected machine defined in the constructor.
-
-syntax :
-
-```javascript
-const Client = import('act-streams-client');
-const client = new client('127.0.0.1:4000','path/to/sqllite.db');
-
-client.pushToQueue({'hi':'hello world'});
-```
-
-### subscribe(tokenValue,listenForEvent,callback)
+### subscribe(listenForEvent,callback)
 
 method will listen for the event defined at listenForEvent and will perform callback on it.
 
 syntax:
 
 ```javascript
-const Client = import('act-streams-client');
+const Client = require('client-streamer');
 const client = new client('127.0.0.1:8000','path/to/sqllite.db');
 
 client.subscribe('event',(activity)=>{ ... });
 ```
 
-### queueLength()
-
-method will return queue length.
-
-syntax:
-
-```javascript
-const Client = import('act-streams-client');
-const client = new client('127.0.0.1:8000','path/to/sqllite.db');
-
-let length = client.queueLength();
-```
-
-### downloadToken(applicationName, apiPath, version)
+### getActivityHistory(applicationName,from,to,activity_code)
 
 provided applicationName and apiPath.
 User will be able to download token for valid registered application.
@@ -104,11 +73,11 @@ User will be able to download token for valid registered application.
 if version is not provided, by default, it will download the token for latest version of app.
 
 ```javascript
-const Client = import('act-streams-client');
+const Client = require('client-streamer');
 const client = new client('127.0.0.1:8000','path/to/sqllite.db');
 
-client.downloadToken('AppName','http://path-to-api'); //latest version
-client.downloadToken('AppName','http://path-to-api','0.0.1'); //for version 0.0.1 (if it exist)
+client.getActivityHistory('AppName','http://path-to-api'); //latest version
+client.getActivityHistory('AppName','http://path-to-api','0.0.1'); //for version 0.0.1 (if it exist)
 ```
 
 ## Events
@@ -131,74 +100,57 @@ This example illustrates the use of the the client library in reading a file and
 ```javascript
 
 const { Tail } = require('tail');
-let Client = require('act-streams-client');
-const client = new Client('127.0.0.0:8000','./sqllite.db');
+const Client = require('client-streamer');
+const { ip } = require('./config.js');
 
-const tail = new Tail('./path/to/file');
+const client = new Client(ip, './sql-lite/sqllite.db');
 
-// console.log('docker-running');
+const createActStream = require('./modules/activity-generator-controller');
 
-//Emitted when the sqlite database has been opened successfully (after calling .open() method)
-client.on('open', function () {
-  console.log('Opening SQLite DB');
-  console.log('Queue contains ' + client.queueLength() + ' job/s');
-});
+const tail = new Tail('./logs/production_json.log');
 
-//Emitted when a task has been added to the queue (after calling .add() method)
-client.on('add', function (task) {
-  console.log('Adding task: ' + JSON.stringify(task));
-  console.log('Queue contains ' + client.queueLength() + ' job/s');
+const tokenFile = require('./configure.json');
 
-});
+let disconnectFlag = true;
 
-//Emitted when the queue starts processing tasks (after calling .start() method)
-client.on('start', function () {
-  console.log('Starting queue');
-});
+// Streaming Log File Data
+tail.on('line', (data) => {
+  const activity = createActStream(JSON.parse(data));
 
-//Emitted when the next task is to be executed.
-client.on('next', function (task) {
-  console.log('Queue contains ' + client.queueLength() + ' job/s');
-  console.log('Process task: ');
-  console.log(JSON.stringify(task));
+  // console.log(`generated activity :- ${activity}`);
 
-  console.log(`in next----------------------------------------------------\n`);
+  if (activity !== undefined) {
 
-  client.push('activities', task, (ack) => {
-    if (ack === 'received') {
-      // tell Queue that we have finished this task
-      // This call will schedule the next task (if there is one)
-      client.done();
-    }
-  });
-
-});
-
-//opening queue
-client.openQueue()
-  .then(function () {
-    //Streaming Log File Data
-    tail.on('line', (data) => {
-      const activity = JSON.parse(data);
-      console.log('activity\n', activity);
-      // client.push('activities', activity);
-      if (activity !== undefined) {
-        client.addToQueue(activity);
-        client.startQueue(activity);
+    // emitted when server gets disconnected
+    client.subscribe('disconnect', () => {
+      console.log('Disconnected');
+      disconnectFlag = true;
+    });
+    // polls server for connection, emitted when server is connected
+    client.subscribe('connect', () => {
+      if (disconnectFlag) {
+        console.log('connected & sending token again');
+        client.configure(tokenFile.token, (ack) => {
+          console.log(`acknowledgement for again connect : ${ack}`);
+          if (ack !== 'received') {
+            disconnectFlag = true;
+          }
+        }, tokenFile.version);
+        disconnectFlag = false;
       }
-    })
-    // error handling
-    tail.on('error', error => error);
-  })
-  .catch(function (err) { //error handling
-    console.log('Error occurred:');
-    console.log(err);
-    process.exit(1);
-  });
+    });
+    //caching of activities
+    client.pushToQueue(activity);
+  }
+});
+// error handling
+tail.on('error', (error) => { console.error(`Error in reading file : ${error}`); });
 
-//sending token to the server
-console.log(require('./configure.json').token);
-client.configure(require('./configure.json').token);
+// sending token at the start of service
+console.log('initial sending of token');
+client.configure(tokenFile.token, (ack) => {
+  console.log(`Initial acknowledgement : ${ack}`);
+}, tokenFile.version);
 
 ```
 
