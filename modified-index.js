@@ -251,5 +251,3 @@ class client extends EventEmitter {
 
 
 }
-
-module.exports = client;

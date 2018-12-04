@@ -58,9 +58,9 @@ class client extends EventEmitter {
             this.q.done();
           }
           else {
-            this.configure(this.access_token, (ack) => {
+            this.configure(this.access_token, this.version, (ack) => {
               console.log(`-----no config received acknowledgement----- : ${ack}`);
-            }, this.version);
+            });
           }
         });
       } catch (err) {
@@ -81,7 +81,6 @@ class client extends EventEmitter {
       this.version = version;
       console.log('token sent');
       this.socket.emit('config', { token, version }, (ack) => { callback(ack) });
-
     }
     catch (error) {
       console.log('error in sending token :' + error);

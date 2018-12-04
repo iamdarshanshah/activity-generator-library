@@ -1,5 +1,8 @@
 # Client Stream Library
 
+[![NPM](https://nodei.co/npm/client-streamer.png)](https://nodei.co/npm/client-streamer/)
+<!--[![NPM](https://nodei.co/npm-dl/kafka-node.png?height=3)](https://nodei.co/npm/kafka-node/)-->
+
 - Through this library a program can connect to Streaming Server.
 - It can Send Configuration token, publish activities and can subscribe to activities and events from      streaming server.
 - Published activities are sent using a queue mechanism to ensure no data loss.
@@ -148,9 +151,9 @@ tail.on('error', (error) => { console.error(`Error in reading file : ${error}`);
 
 // sending token at the start of service
 console.log('initial sending of token');
-client.configure(tokenFile.token, (ack) => {
+client.configure(tokenFile.token,tokenFile.version, (ack) => {
   console.log(`Initial acknowledgement : ${ack}`);
-}, tokenFile.version);
+});
 
 ```
 

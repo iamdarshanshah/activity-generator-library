@@ -1,6 +1,6 @@
 {
   "name": "client-streamer",
-  "version": "1.0.4-alpha",
+  "version": "1.0.5-alpha",
   "description": "A client library used for establishing connection with streaming server to get/push activity stream data and also maintain a persistent queue on client side",
   "main": "index.js",
   "keywords": [
